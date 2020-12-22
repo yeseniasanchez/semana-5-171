@@ -6,7 +6,13 @@ const config = require('../secret/config.js');
 module.exports = {
     add: async (req, res, next) => {
         try {
-            const reg = await models.Usuario.create(req.body);
+            const reg = await models.Usuario.create({
+                nombre: req.body.nombre, 
+                rol: req.body.rol,
+                password: bcrypt.encodeBase64(req.body.password),
+                email: req.body.email,
+                estado: 1
+            });
             res.status(200).json(reg);
         } catch (e) {
             res.status(500).send({
@@ -69,7 +75,7 @@ module.exports = {
             const reg = await models.Usuario.update({
                 nombre: req.body.nombre, 
                 rol: req.body.rol,
-                password: req.body.password,
+                password: bcrypt.encodeBase64(req.body.password),
                 email: req.body.email
             }, { where: { id: req.body.id } });
             res.status(200).json(reg);
@@ -142,9 +148,7 @@ module.exports = {
             }
     
             var token = jwt.sign({
-                id: user.id, 
-                name: user.name, 
-                email: user.email,
+                id: user.id,
                 rol: user.rol
             }, config.secret, {
                 expiresIn: 86400 // expires in 24 hours
