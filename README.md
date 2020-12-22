@@ -1,1 +1,7 @@
-# semana-5-171
+# Estructura Evaluacion semana 4
+
+#  Comando
+```
+npm install
+```
+
