@@ -2,6 +2,7 @@ const models = require('../models');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const config = require('../secret/config.js');
+const BCRYPT_SALT_ROUNDS = 12;
 
 module.exports = {
     add: async (req, res, next) => {
@@ -9,7 +10,7 @@ module.exports = {
             const reg = await models.Usuario.create({
                 nombre: req.body.nombre, 
                 rol: req.body.rol,
-                password: bcrypt.encodeBase64(req.body.password),
+                password: await bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS),
                 email: req.body.email,
                 estado: 1
             });
@@ -75,7 +76,7 @@ module.exports = {
             const reg = await models.Usuario.update({
                 nombre: req.body.nombre, 
                 rol: req.body.rol,
-                password: bcrypt.encodeBase64(req.body.password),
+                password: await bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS),
                 email: req.body.email
             }, { where: { id: req.body.id } });
             res.status(200).json(reg);
